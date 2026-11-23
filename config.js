@@ -7,8 +7,8 @@
 // Mientras estén vacíos, la app abre en MODO DEMOSTRACIÓN (datos de prueba).
 // =====================================================================
 window.LT_CONFIG = {
-  SUPABASE_URL: "",
-  SUPABASE_ANON_KEY: "",
+  SUPABASE_URL: "https://gfxagjkbsvwthqxxdouy.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_xAUkVCjByc0FYSGKbJi5VQ_H9VfbYVR",
 
   // Los empleados entran con un nombre de usuario (ej: "juan").
   // Internamente se guarda como juan@<este dominio>. No se envían correos.

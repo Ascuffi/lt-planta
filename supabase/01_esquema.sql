@@ -642,11 +642,10 @@ grant usage, select on all sequences in schema public to authenticated;
 
 -- Nadie entra sin iniciar sesión
 revoke all on all tables in schema public from anon;
-revoke execute on all functions in schema public from anon;
+alter function public.proteger_stock() set search_path = public;
+revoke execute on all functions in schema public from public, anon, authenticated;
 grant execute on function public.emitir_remito(jsonb), public.confirmar_pago(bigint,bigint,numeric,text,text,text),
   public.anular_pago(bigint,text,text), public.anular_remito(bigint,text,text),
   public.registrar_ingreso(text,numeric,text), public.ajustar_stock(text,numeric,text),
   public.admin_crear_usuario(text,text,text,text,text), public.admin_cambiar_password(uuid,text),
   public.es_activo(), public.es_admin() to authenticated;
-revoke execute on function public.verificar_mi_password(text) from public, anon;
-grant execute on function public.verificar_mi_password(text) to authenticated;
