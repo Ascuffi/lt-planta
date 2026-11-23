@@ -28,7 +28,9 @@ export async function render(el, ctx) {
       <a class="btn btn-big" href="#/pedidos">${icon("pedido")} Pedidos</a>
       <span class="esp"></span>
     </div>
-    ${bajos.map((m) => `<div class="alerta ${m.stock <= 0 ? "mal" : ""}">${icon("alerta")} <b>${esc(m.nombre)}</b> bajo el mínimo: ${cant(m.stock, m.unidad)}. Tocá el ${m.tipo === "arido" ? "acopio" : m.tipo === "agua" ? "tanque" : "silo"} para cargar un ingreso.</div>`).join("")}
+    ${bajos.length > 2
+      ? `<div class="alerta ${bajos.some((m) => m.stock <= 0) ? "mal" : ""}">${icon("alerta")} <span><b>Stock bajo en ${bajos.length} depósitos:</b> ${bajos.map((m) => esc(m.nombre.replace("Silo de cemento", "Silo"))).join(", ")}. ${bajos.every((m) => m.stock <= 0) ? "Si recién empiezan, cargá el nivel real de cada uno en <a href='#/stock'>Stock → Ajustar</a>." : "Tocá cada uno en el dibujo para cargar un ingreso."}</span></div>`
+      : bajos.map((m) => `<div class="alerta ${m.stock <= 0 ? "mal" : ""}">${icon("alerta")} <b>${esc(m.nombre)}</b> bajo el mínimo: ${cant(m.stock, m.unidad)}. Tocá el ${m.tipo === "arido" ? "acopio" : m.tipo === "agua" ? "tanque" : "silo"} para cargar un ingreso.</div>`).join("")}
     <div class="grid g4">
       <div class="kpi"><span>Remitos de hoy</span><b>${remHoy.length}</b><small>${n1(m3Hoy)} m³ despachados</small></div>
       <div class="kpi"><span>Pedidos para hoy</span><b>${pedHoy.length}</b><small>${n1(pedHoy.reduce((s, p) => s + Number(p.m3_pendientes), 0))} m³ por entregar</small></div>

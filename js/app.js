@@ -89,7 +89,7 @@ function armarShell() {
         </nav>
         <div class="yo">
           <span class="av">${esc(ini)}</span>
-          <div><b>${esc(ctx.perfil.nombre)}</b><small>${ctx.esAdmin ? "Administrador" : "Operador"} · ${esc(ctx.perfil.usuario)}</small></div>
+          <div title="${esc(ctx.perfil.nombre)} · usuario: ${esc(ctx.perfil.usuario)}"><b>${esc(ctx.perfil.nombre)}</b><small>${ctx.esAdmin ? "Administrador" : "Operador"}</small></div>
           <button id="mi-pass" title="Cambiar mi contraseña" aria-label="Cambiar mi contraseña">${icon("candado")}</button>
           <button id="salir" title="Cerrar sesión" aria-label="Cerrar sesión">${icon("salir")}</button>
         </div>

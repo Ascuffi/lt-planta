@@ -45,7 +45,9 @@ export async function render(el, ctx) {
   const [mats, movs] = await Promise.all([ctx.api.materiales.list(), ctx.api.materiales.movimientos({ limite: 150 })]);
   const bajos = mats.filter((m) => m.stock < m.minimo);
   el.innerHTML = `
-    ${bajos.map((m) => `<div class="alerta ${m.stock <= 0 ? "mal" : ""}">${icon("alerta")} <b>${esc(m.nombre)}</b> está por debajo del mínimo (${cant(m.stock, m.unidad)}; mínimo ${cant(m.minimo, m.unidad)}).</div>`).join("")}
+    ${bajos.length > 2
+      ? `<div class="alerta ${bajos.some((m) => m.stock <= 0) ? "mal" : ""}">${icon("alerta")} <span><b>Stock bajo en ${bajos.length} depósitos.</b> Para cargar lo que hay hoy, usá <b>Ajustar</b> en cada uno y escribí la cantidad medida.</span></div>`
+      : bajos.map((m) => `<div class="alerta ${m.stock <= 0 ? "mal" : ""}">${icon("alerta")} <b>${esc(m.nombre)}</b> está por debajo del mínimo (${cant(m.stock, m.unidad)}; mínimo ${cant(m.minimo, m.unidad)}).</div>`).join("")}
     <div class="grid g4" id="mats">
       ${mats.map((m) => {
         const p = m.capacidad > 0 ? Math.max(0, Math.min(100, (m.stock / m.capacidad) * 100)) : 0;

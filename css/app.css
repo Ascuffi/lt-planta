@@ -50,12 +50,14 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .side nav a:hover { background: var(--panel); color: var(--texto); }
 .side nav a.on { background: var(--amarillo); color: #1a1918; font-weight: 700; }
 .side nav .sep { height: 1px; background: var(--borde); margin: 8px 6px; }
-.side .yo { border-top: 1px solid var(--borde); padding: 12px 14px; display: flex; align-items: center; gap: 10px; }
+.side .yo { border-top: 1px solid var(--borde); padding: 12px 10px; display: flex; align-items: center; gap: 8px; }
+.side .yo small { display: block; }
+.side .yo .av { flex: none; }
 .side .yo .av { width: 36px; height: 36px; border-radius: 50%; background: var(--carbon); color: var(--amarillo); display: grid; place-items: center; font-weight: 800; }
 .side .yo div { flex: 1; min-width: 0; }
 .side .yo b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .side .yo small { color: var(--texto-3); }
-.side .yo button { background: none; border: 1px solid var(--borde); border-radius: 8px; color: var(--texto-2); padding: 7px; cursor: pointer; }
+.side .yo button { background: none; border: 1px solid var(--borde); border-radius: 8px; color: var(--texto-2); padding: 6px; cursor: pointer; flex: none; }
 .side .yo button:hover { color: var(--mal); border-color: var(--mal); }
 
 .main { min-width: 0; display: flex; flex-direction: column; }
