@@ -178,7 +178,7 @@ window.addEventListener("appinstalled", () => {
 function prepararInstalar() {
   const a = document.getElementById("instalar");
   if (!a) return;
-  a.hidden = instalada() || (!pedidoInstalar && !esIOS);
+  a.hidden = instalada();
   a.onclick = async (e) => {
     e.preventDefault();
     if (pedidoInstalar) {
@@ -189,15 +189,28 @@ function prepararInstalar() {
       return;
     }
     const { modal } = await import("./ui.js");
+    const esEdge = /Edg\//.test(navigator.userAgent);
+    const esAndroid = /android/i.test(navigator.userAgent);
+    const pasos = esIOS
+      ? `<li>Abrí esta página en <b>Safari</b>.</li>
+         <li>Tocá el botón <b>Compartir</b> (el cuadrado con la flecha hacia arriba).</li>
+         <li>Elegí <b>Agregar a inicio</b> y tocá <b>Agregar</b>.</li>`
+      : esAndroid
+      ? `<li>En Chrome, tocá el menú <b>⋮</b> (arriba a la derecha).</li>
+         <li>Elegí <b>Instalar app</b> o <b>Agregar a pantalla principal</b>.</li>`
+      : esEdge
+      ? `<li>Tocá el menú <b>…</b> de Edge (arriba a la derecha).</li>
+         <li>Entrá a <b>Aplicaciones</b> → <b>Instalar este sitio como una aplicación</b>.</li>
+         <li>O tocá el ícono de instalar que aparece a la derecha de la barra de direcciones.</li>`
+      : `<li>Tocá el ícono de instalar a la derecha de la barra de direcciones (una pantalla con una flecha).</li>
+         <li>Si no está: menú <b>⋮</b> → <b>Transmitir, guardar y compartir</b> → <b>Instalar página como app</b>.</li>`;
     modal({
-      title: "Instalar en iPhone o iPad",
+      title: "Instalar LT Planta",
       okText: "Entendido",
       cancelText: "",
-      body: `<ol style="line-height:1.8;padding-left:20px;margin:0">
-        <li>Abrí esta página en <b>Safari</b>.</li>
-        <li>Tocá el botón <b>Compartir</b> (el cuadrado con la flecha hacia arriba).</li>
-        <li>Elegí <b>Agregar a inicio</b> y tocá <b>Agregar</b>.</li>
-        <li>Abrí la app desde el ícono <b>LT Planta</b> en tu pantalla.</li></ol>`,
+      body: `<ol style="line-height:1.8;padding-left:20px;margin:0">${pasos}
+        <li>Después abrila desde el ícono <b>LT Planta</b>.</li></ol>
+        <p class="ayuda">Si la opción no aparece, puede que la computadora tenga bloqueada la instalación de apps: en ese caso seguí usándola desde el navegador, funciona igual.</p>`,
     });
   };
 }
