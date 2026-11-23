@@ -635,6 +635,11 @@ end $$;
 create trigger proteger_stock before update on public.materiales
   for each row execute function public.proteger_stock();
 
+-- Acceso de la app (usuarios con sesión iniciada). Los permisos finos los da RLS.
+grant usage on schema public to authenticated;
+grant select, insert, update, delete on all tables in schema public to authenticated;
+grant usage, select on all sequences in schema public to authenticated;
+
 -- Nadie entra sin iniciar sesión
 revoke all on all tables in schema public from anon;
 revoke execute on all functions in schema public from anon;
