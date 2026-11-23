@@ -86,6 +86,7 @@ function armarShell() {
           ${VISTAS.filter((v) => !v.soloAdmin || ctx.esAdmin)
             .map((v) => (v.sep ? `<div class="sep"></div>` : `<a href="#/${v.id}" data-v="${v.id}">${icon(v.icono)}<span>${v.titulo}</span></a>`))
             .join("")}
+          <a href="#" id="instalar" hidden>${icon("instalar")}<span>Instalar app</span></a>
         </nav>
         <div class="yo">
           <span class="av">${esc(ini)}</span>
@@ -113,6 +114,7 @@ function armarShell() {
     const { cambiarPassword } = await import("./views/admin.js");
     cambiarPassword(ctx, ctx.perfil);
   };
+  prepararInstalar();
   const shell = root.querySelector(".shell");
   document.getElementById("menu").onclick = () => shell.classList.toggle("menu-abierto");
   root.querySelector(".side nav").addEventListener("click", () => shell.classList.remove("menu-abierto"));
@@ -157,6 +159,52 @@ async function render() {
     cont.innerHTML = `<div class="alerta mal">${icon("alerta")} No se pudo cargar esta pantalla: ${esc(errorMsg(ex))}</div>
       <button class="btn" onclick="location.reload()">Reintentar</button>`;
   }
+}
+
+// ---------------------------------------------------------------- instalar como app
+let pedidoInstalar = null;
+const esIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const instalada = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  pedidoInstalar = e;
+  prepararInstalar();
+});
+window.addEventListener("appinstalled", () => {
+  pedidoInstalar = null;
+  prepararInstalar();
+  toast("App instalada. Ya la podés abrir desde su ícono.");
+});
+function prepararInstalar() {
+  const a = document.getElementById("instalar");
+  if (!a) return;
+  a.hidden = instalada() || (!pedidoInstalar && !esIOS);
+  a.onclick = async (e) => {
+    e.preventDefault();
+    if (pedidoInstalar) {
+      pedidoInstalar.prompt();
+      await pedidoInstalar.userChoice;
+      pedidoInstalar = null;
+      prepararInstalar();
+      return;
+    }
+    const { modal } = await import("./ui.js");
+    modal({
+      title: "Instalar en iPhone o iPad",
+      okText: "Entendido",
+      cancelText: "",
+      body: `<ol style="line-height:1.8;padding-left:20px;margin:0">
+        <li>Abrí esta página en <b>Safari</b>.</li>
+        <li>Tocá el botón <b>Compartir</b> (el cuadrado con la flecha hacia arriba).</li>
+        <li>Elegí <b>Agregar a inicio</b> y tocá <b>Agregar</b>.</li>
+        <li>Abrí la app desde el ícono <b>LT Planta</b> en tu pantalla.</li></ol>`,
+    });
+  };
+}
+if ("serviceWorker" in navigator) {
+  const registrar = () => navigator.serviceWorker.register("sw.js").catch(() => {});
+  if (document.readyState === "complete") registrar();
+  else window.addEventListener("load", registrar);
 }
 
 window.addEventListener("hashchange", render);
