@@ -171,3 +171,30 @@ export const usuarios = {
   guardar: async (id, cambios) => ok(await sb.from("perfiles").update(cambios).eq("id", id)),
   password: async (id, password) => ok(await sb.rpc("admin_cambiar_password", { p_usuario_id: id, p_password: password })),
 };
+
+// ----------------------------------------------------------- reportes
+// Trae todas las filas (Supabase devuelve como máximo 1000 por consulta).
+async function todo(armar) {
+  const out = [];
+  for (let i = 0; ; i += 1000) {
+    const filas = ok(await armar().range(i, i + 999));
+    out.push(...filas);
+    if (filas.length < 1000) return out;
+  }
+}
+export const reportes = {
+  async periodo({ desde, hasta }) {
+    const d0 = new Date(desde + "T00:00:00").toISOString();
+    const d1 = new Date(hasta + "T23:59:59.999").toISOString();
+    const [remitos, movimientos, pagos, suelos, mats, cuentasCli] = await Promise.all([
+      todo(() => sb.from("remitos_vista").select("*").gte("fecha", d0).lte("fecha", d1).order("numero")),
+      // desde el inicio del período hasta hoy: sirve para calcular el stock al inicio y al cierre
+      todo(() => sb.from("movimientos_stock_vista").select("*").gte("creado_en", d0).order("id")),
+      todo(() => sb.from("pagos_vista").select("*").gte("fecha", d0).lte("fecha", d1).order("fecha")),
+      todo(() => sb.from("trabajos_suelo_vista").select("*").gte("fecha", desde).lte("fecha", hasta).order("fecha")),
+      materiales.list(),
+      cuentas.list(),
+    ]);
+    return { remitos, movimientos, pagos, suelos, materiales: mats, cuentas: cuentasCli };
+  },
+};

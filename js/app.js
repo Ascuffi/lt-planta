@@ -12,6 +12,7 @@ const VISTAS = [
   { id: "personal", titulo: "Choferes y operadores", icono: "personal", mod: () => import("./views/personal.js") },
   { id: "suelos", titulo: "Movimiento de suelos", icono: "suelos", mod: () => import("./views/suelos.js") },
   { sep: true },
+  { id: "reportes", titulo: "Reportes y Excel", icono: "reporte", mod: () => import("./views/reportes.js"), soloAdmin: true },
   { id: "formulas", titulo: "Fórmulas y precios", icono: "formula", mod: () => import("./views/formulas.js") },
   { id: "admin", titulo: "Usuarios y empresa", icono: "admin", mod: () => import("./views/admin.js"), soloAdmin: true },
 ];

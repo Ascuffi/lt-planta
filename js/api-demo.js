@@ -475,3 +475,20 @@ export const usuarios = {
     save();
   },
 };
+
+export const reportes = {
+  async periodo({ desde, hasta }) {
+    activo();
+    const d0 = new Date(desde + "T00:00:00").toISOString();
+    const d1 = new Date(hasta + "T23:59:59.999").toISOString();
+    const movs = await materiales.movimientos({ limite: 100000 });
+    return {
+      remitos: db.remitos.filter((r) => r.fecha >= d0 && r.fecha <= d1).sort((a, b) => a.numero - b.numero).map(vistaRemito),
+      movimientos: movs.filter((m) => m.creado_en >= d0).reverse(),
+      pagos: db.pagos.filter((p) => p.fecha >= d0 && p.fecha <= d1).map(vistaPago).sort((a, b) => a.fecha.localeCompare(b.fecha)),
+      suelos: (await suelos.list({ desde, hasta })).reverse(),
+      materiales: clone(db.materiales),
+      cuentas: await cuentas.list(),
+    };
+  },
+};

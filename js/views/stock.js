@@ -73,7 +73,9 @@ export async function render(el, ctx) {
     </div>`;
 
   const pintarMovs = (lista) => {
-    document.getElementById("movs").innerHTML = lista.length
+    const box = el.querySelector("#movs");
+    if (!box) return;
+    box.innerHTML = lista.length
       ? `<div class="tabla-wrap"><table>
         <thead><tr><th>Fecha</th><th>Material</th><th>Tipo</th><th class="num">Cantidad</th><th>Detalle</th><th>Usuario</th></tr></thead>
         <tbody>${lista.map((x) => `<tr>
@@ -84,7 +86,7 @@ export async function render(el, ctx) {
       : vacio("Todavía no hay movimientos.");
   };
   pintarMovs(movs);
-  document.getElementById("filtro-mat").onchange = async (e) =>
+  el.querySelector("#filtro-mat").onchange = async (e) =>
     pintarMovs(await ctx.api.materiales.movimientos({ material: e.target.value || null, limite: 150 }));
 
   el.querySelector("#mats").addEventListener("click", async (e) => {
